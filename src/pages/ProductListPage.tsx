@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MOCK_PRODUCTS } from '@/lib/constants';
+import { useProducts } from '@/hooks/useProducts';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { FilterSidebar } from '@/components/filters/FilterSidebar';
 import { SlidersHorizontal, X } from 'lucide-react';
 import type { StoreFilters } from '@/types/store';
 
 export function ProductListPage() {
+  const { products } = useProducts();
   const [searchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
   const queryParam = searchParams.get('q');
@@ -37,7 +38,7 @@ export function ProductListPage() {
   const filteredProducts = useMemo(() => {
     const q = filters.query.trim().toLowerCase();
 
-    return [...MOCK_PRODUCTS]
+    return [...products]
       .filter((p) => (filters.category === 'all' ? true : p.category === filters.category))
       .filter((p) => (filters.condition === 'all' ? true : p.condition === filters.condition))
       .filter((p) =>
@@ -69,7 +70,7 @@ export function ProductListPage() {
       <div className="mb-8 space-y-2">
         <h1 className="text-3xl font-bold text-white">
           {filters.category !== 'all'
-            ? MOCK_PRODUCTS.find((p) => p.category === filters.category)?.category.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) || 'Productos'
+            ? products.find((p) => p.category === filters.category)?.category.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) || 'Productos'
             : filters.query
               ? `Resultados para "${filters.query}"`
               : 'Todos los productos'}

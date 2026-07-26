@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import { MOCK_PRODUCTS } from '@/lib/constants';
+import { useProducts } from '@/hooks/useProducts';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui';
 import { ArrowRight } from 'lucide-react';
 
 export function FeaturedCarousel() {
-  const featured = MOCK_PRODUCTS.filter((p) => p.isFeatured).slice(0, 4);
+  const { products } = useProducts();
+  const featured = products.filter((p) => p.isFeatured).slice(0, 4);
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">

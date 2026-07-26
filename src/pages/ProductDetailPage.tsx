@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Star, Check, Truck, Shield, ChevronRight } from 'lucide-react';
-import { MOCK_PRODUCTS } from '@/lib/constants';
+import { useProducts } from '@/hooks/useProducts';
 import { useCartStore } from '@/stores/cart-store';
 import { formatCurrency, cn, getStockDisplay } from '@/lib/utils';
 import { Button, Badge } from '@/components/ui';
@@ -10,12 +10,19 @@ import { ProductCard } from '@/components/product/ProductCard';
 
 export function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const product = MOCK_PRODUCTS.find((p) => p.slug === slug);
+  const { products } = useProducts();
+  const product = products.find((p) => p.slug === slug);
   const addItem = useCartStore((s) => s.addItem);
 
   const [selectedVariant, setSelectedVariant] = useState(product?.variants[0]?.id ?? '');
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+
+  useEffect(() => {
+    if (product?.variants?.[0]?.id) {
+      setSelectedVariant(product.variants[0].id);
+    }
+  }, [product]);
 
   if (!product) {
     return (
@@ -36,7 +43,7 @@ export function ProductDetailPage() {
   const currentPrice = product.price + (variant?.priceDelta ?? 0);
   const stockInfo = getStockDisplay(product.stock);
 
-  const relatedProducts = MOCK_PRODUCTS.filter(
+  const relatedProducts = products.filter(
     (p) => p.category === product.category && p.id !== product.id
   ).slice(0, 3);
 
