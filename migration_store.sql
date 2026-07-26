@@ -1,7 +1,7 @@
 -- ==============================================================================
--- KINEBYTES SHOP — MIGRACIÓN COMPLETA DE BASE DE DATOS PARA SUPABASE
--- Este script crea todas las tablas, vistas, políticas RLS, índices y datos iniciales.
--- Debe ejecutarse en el MISMO proyecto de Supabase que KineByte (comparte auth.users).
+-- KINEBYTES SHOP — MIGRACIÓN COMPLETA Y SEGURA PARA SUPABASE
+-- Este script es 100% idempotente (se puede ejecutar múltiples veces sin errores).
+-- Ejecutar en el SQL Editor del mismo proyecto Supabase que KineByte.
 -- ==============================================================================
 
 -- Habilitar extensión UUID
@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
 
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Categorias accesibles públicamente" ON public.categories;
 CREATE POLICY "Categorias accesibles públicamente"
   ON public.categories FOR SELECT
   USING (true);
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.products (
   name TEXT NOT NULL,
   short_description TEXT,
   description TEXT,
-  category TEXT NOT NULL, -- Corresponde al slug de la categoría
+  category TEXT NOT NULL,
   price NUMERIC(10,2) NOT NULL,
   compare_at_price NUMERIC(10,2),
   rating NUMERIC(2,1) DEFAULT 5.0,
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS public.products (
 
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Productos accesibles públicamente" ON public.products;
 CREATE POLICY "Productos accesibles públicamente"
   ON public.products FOR SELECT
   USING (true);
@@ -73,8 +75,12 @@ CREATE TABLE IF NOT EXISTS public.product_variants (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Asegura que la columna sku exista incluso si la tabla se creó previamente
+ALTER TABLE public.product_variants ADD COLUMN IF NOT EXISTS sku TEXT;
+
 ALTER TABLE public.product_variants ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Variantes accesibles públicamente" ON public.product_variants;
 CREATE POLICY "Variantes accesibles públicamente"
   ON public.product_variants FOR SELECT
   USING (true);
@@ -93,18 +99,19 @@ CREATE TABLE IF NOT EXISTS public.product_specifications (
 
 ALTER TABLE public.product_specifications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Especificaciones accesibles públicamente" ON public.product_specifications;
 CREATE POLICY "Especificaciones accesibles públicamente"
   ON public.product_specifications FOR SELECT
   USING (true);
 
 
 -- ------------------------------------------------------------------------------
--- 5. TABLA: HISTORIAL DE PEDIDOS (orders) — Vinculado a auth.users de Supabase
+-- 5. TABLA: HISTORIAL DE PEDIDOS (orders) — Vinculado a auth.users
 -- ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  reference TEXT UNIQUE NOT NULL, -- Código de orden ej. KB-X89A12
+  reference TEXT UNIQUE NOT NULL,
   stripe_payment_intent_id TEXT,
   stripe_session_id TEXT,
   payment_method TEXT DEFAULT 'card',
@@ -112,23 +119,26 @@ CREATE TABLE IF NOT EXISTS public.orders (
   subtotal NUMERIC(10,2) NOT NULL,
   shipping_cost NUMERIC(10,2) DEFAULT 0,
   total NUMERIC(10,2) NOT NULL,
-  shipping_address JSONB NOT NULL, -- Estructura JSON del formulario de envío
+  shipping_address JSONB NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Usuarios pueden ver su propio historial de pedidos" ON public.orders;
 CREATE POLICY "Usuarios pueden ver su propio historial de pedidos"
   ON public.orders FOR SELECT
   TO authenticated
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Usuarios pueden registrar sus propios pedidos" ON public.orders;
 CREATE POLICY "Usuarios pueden registrar sus propios pedidos"
   ON public.orders FOR INSERT
   TO authenticated
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Usuarios pueden actualizar sus propios pedidos" ON public.orders;
 CREATE POLICY "Usuarios pueden actualizar sus propios pedidos"
   ON public.orders FOR UPDATE
   TO authenticated
@@ -153,6 +163,7 @@ CREATE TABLE IF NOT EXISTS public.order_items (
 
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Usuarios pueden ver items de sus pedidos" ON public.order_items;
 CREATE POLICY "Usuarios pueden ver items de sus pedidos"
   ON public.order_items FOR SELECT
   TO authenticated
@@ -164,6 +175,7 @@ CREATE POLICY "Usuarios pueden ver items de sus pedidos"
     )
   );
 
+DROP POLICY IF EXISTS "Usuarios pueden registrar items de sus pedidos" ON public.order_items;
 CREATE POLICY "Usuarios pueden registrar items de sus pedidos"
   ON public.order_items FOR INSERT
   TO authenticated
@@ -177,8 +189,7 @@ CREATE POLICY "Usuarios pueden registrar items de sus pedidos"
 
 
 -- ------------------------------------------------------------------------------
--- 7. VISTA: COMPRAS DE HARDWARE / SOFTWARE POR USUARIO
--- Utilizable directamente por el Dashboard principal de KineByte
+-- 7. VISTA: COMPRAS DE HARDWARE / SOFTWARE POR USUARIO (para KineByte Dashboard)
 -- ------------------------------------------------------------------------------
 CREATE OR REPLACE VIEW public.user_purchased_products AS
 SELECT
@@ -201,7 +212,7 @@ WHERE o.status IN ('paid', 'processing', 'fulfilled', 'pending');
 
 
 -- ------------------------------------------------------------------------------
--- 8. FUNCIONES Y TRIGGERS (Auto-update updated_at)
+-- 8. FUNCIONES Y TRIGGERS
 -- ------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$
@@ -238,7 +249,6 @@ CREATE INDEX IF NOT EXISTS idx_order_items_order ON public.order_items(order_id)
 
 -- ==============================================================================
 -- 10. DATOS INICIALES (SEED DATA)
--- Inserta todas las categorías y los 8 productos del catálogo oficial.
 -- ==============================================================================
 
 -- Categorías
@@ -260,7 +270,7 @@ VALUES
   ('a1b2c3d4-0002-4000-8000-000000000002', 'sensor-beam-agility', 'Sensor Beam Agility', 'Sensor para medir paso, reacción y precisión.', 'Un módulo de detección pensado para automatizar pruebas de agilidad con métricas exportables al dashboard. Latencia ultra-baja de 2ms para mediciones profesionales.', 'sensors', 99, 119, 4.7, 31, 'low-stock', 'new', ARRAY['Latencia 2ms', 'Lecturas precisas', 'Montaje rápido', 'Doble sensor infrarrojo'], ARRAY['sensor', 'tracking', 'field'], 'from-cyan-500/25 via-cyan-500/10 to-transparent', false),
   ('a1b2c3d4-0003-4000-8000-000000000003', 'training-pack-pro', 'Training Pack Pro', 'Bundle completo para sesiones de alto rendimiento.', 'Incluye hardware, soporte de software y presets de entrenamiento para implementar una estación KineBytes completa. Ideal para academias y equipos profesionales.', 'training-packs', 499, 599, 5.0, 18, 'in-stock', 'bundle', ARRAY['3 Conos Interactivos Pro', '1 Sensor Beam Agility', '1 Licencia Software Pro (3 meses)', 'Kit de montaje incluido', 'Soporte prioritario'], ARRAY['bundle', 'academy', 'featured'], 'from-violet-500/25 via-violet-500/10 to-transparent', true),
   ('a1b2c3d4-0004-4000-8000-000000000004', 'software-license-pro', 'Licencia Software Pro', 'Acceso al dashboard y módulos avanzados.', 'Activa analítica avanzada, reportes, administración de dispositivos y roles de subadmin en una sola licencia. Integración directa con el dashboard KineByte.', 'software', 49, NULL, 4.8, 72, 'in-stock', 'new', ARRAY['Dashboard completo', 'Roles avanzados', 'Exportación CSV/PDF', 'API access'], ARRAY['software', 'subscription', 'featured'], 'from-amber-500/25 via-amber-500/10 to-transparent', true),
-  ('a1b2c3d4-0005-4000-8000-000000000005', 'accessories-maintenance-kit', 'Kit de Mantenimiento', 'Accesorios para calibración, soporte y reemplazo.', 'Incluye soportes, cables y piezas de repuesto para asegurar continuidad operacional en campo. Compatible con todo el ecosistema KineBytes.', 'accessories', 39, NULL, 4.6, 24, 'in-stock', 'bundle', ARRAY['Cables reforzados', 'Herramientas base', 'Soportes modulares', 'Estuche de transporte'], ARRAY['accessory', 'maintenance'], 'from-sky-500/25 via-sky-500/10 to-transparent', false),
+  ('a1b2c3d4-0005-4000-8000-000000000005', 'accessories-maintenance-kit', 'Kit de Mantenimiento', 'Accesorios para calibración, soporte y reemplazo.', 'Incluye soportes, cables y piezas de repuesto para asegurar continuidad operacional en campo. Compatible con todo el ecosistema KineBytes.', 'accessories', 39, NULL, 4.6, 24, 'in-stock', 'bundle', ARRAY['Cables reinforced', 'Herramientas base', 'Soportes modulares', 'Estuche de transporte'], ARRAY['accessory', 'maintenance'], 'from-sky-500/25 via-sky-500/10 to-transparent', false),
   ('a1b2c3d4-0006-4000-8000-000000000006', 'reaction-pad-elite', 'Reaction Pad Elite', 'Panel de reacción táctil con métricas en tiempo real.', 'Panel de pared con sensores capacitivos para medir tiempo de reacción táctil. Se integra con el dashboard para comparar sesiones y generar informes de progreso.', 'interactive-hardware', 229, 269, 4.8, 15, 'in-stock', 'new', ARRAY['8 zonas táctiles', 'Display LED integrado', 'Modos de juego preconfigurados', 'Bluetooth 5.0'], ARRAY['hardware', 'reaction', 'training'], 'from-emerald-500/25 via-emerald-500/10 to-transparent', false),
   ('a1b2c3d4-0007-4000-8000-000000000007', 'speed-gate-duo', 'Speed Gate Duo', 'Puertas de velocidad con cronómetro automático.', 'Par de sensores inalámbricos para medir sprints, parciales y aceleraciones. Conectividad WiFi para transmisión directa al dashboard.', 'sensors', 189, NULL, 4.5, 8, 'in-stock', 'new', ARRAY['Par de sensores', 'Cronómetro 0.001s', 'WiFi directo', 'Batería 72h'], ARRAY['sensor', 'speed', 'sprint'], 'from-cyan-500/25 via-cyan-500/10 to-transparent', false),
   ('a1b2c3d4-0008-4000-8000-000000000008', 'team-license-enterprise', 'Licencia Team Enterprise', 'Licencia para equipos con roles y analytics avanzados.', 'Pensada para clubes y academias. Incluye multi-coach, roles de administrador, reportes comparativos entre atletas y exportación programática vía API.', 'software', 149, 199, 4.9, 11, 'in-stock', 'new', ARRAY['Multi-coach', 'Comparación de atletas', 'Exportación API', 'Soporte prioritario'], ARRAY['software', 'enterprise', 'teams'], 'from-amber-500/25 via-amber-500/10 to-transparent', false)
@@ -271,6 +281,30 @@ SET name = EXCLUDED.name,
     price = EXCLUDED.price,
     compare_at_price = EXCLUDED.compare_at_price,
     features = EXCLUDED.features;
+
+
+-- Limpieza previa de variantes y especificaciones de semillas para evitar duplicados
+DELETE FROM public.product_specifications WHERE product_id IN (
+  'a1b2c3d4-0001-4000-8000-000000000001',
+  'a1b2c3d4-0002-4000-8000-000000000002',
+  'a1b2c3d4-0003-4000-8000-000000000003',
+  'a1b2c3d4-0004-4000-8000-000000000004',
+  'a1b2c3d4-0005-4000-8000-000000000005',
+  'a1b2c3d4-0006-4000-8000-000000000006',
+  'a1b2c3d4-0007-4000-8000-000000000007',
+  'a1b2c3d4-0008-4000-8000-000000000008'
+);
+
+DELETE FROM public.product_variants WHERE product_id IN (
+  'a1b2c3d4-0001-4000-8000-000000000001',
+  'a1b2c3d4-0002-4000-8000-000000000002',
+  'a1b2c3d4-0003-4000-8000-000000000003',
+  'a1b2c3d4-0004-4000-8000-000000000004',
+  'a1b2c3d4-0005-4000-8000-000000000005',
+  'a1b2c3d4-0006-4000-8000-000000000006',
+  'a1b2c3d4-0007-4000-8000-000000000007',
+  'a1b2c3d4-0008-4000-8000-000000000008'
+);
 
 -- Variantes
 INSERT INTO public.product_variants (product_id, label, price_delta, stock, sku)
