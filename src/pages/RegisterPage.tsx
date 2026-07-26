@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth-store';
 import { Button, Input } from '@/components/ui';
+import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
 import { UserPlus, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 
 export function RegisterPage() {
@@ -14,6 +15,7 @@ export function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [captchaToken, setCaptchaToken] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -38,7 +40,7 @@ export function RegisterPage() {
       return;
     }
 
-    const result = await signUp(name, email, password);
+    const result = await signUp(name, email, password, captchaToken);
     if (result.error) {
       setError(result.error);
     } else if (result.success) {
@@ -114,6 +116,12 @@ export function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+            />
+
+            {/* Turnstile Captcha Widget for Supabase Captcha Protection */}
+            <TurnstileWidget
+              onSuccess={(token) => setCaptchaToken(token)}
+              onExpire={() => setCaptchaToken('')}
             />
 
             {error && (

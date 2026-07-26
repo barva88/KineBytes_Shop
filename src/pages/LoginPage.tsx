@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth-store';
 import { Button, Input } from '@/components/ui';
+import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
 import { LogIn, Eye, EyeOff } from 'lucide-react';
 
 export function LoginPage() {
@@ -12,6 +13,7 @@ export function LoginPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [captchaToken, setCaptchaToken] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
@@ -25,7 +27,7 @@ export function LoginPage() {
     e.preventDefault();
     setError('');
 
-    const result = await signIn(email, password);
+    const result = await signIn(email, password, captchaToken);
     if (result.error) {
       setError(result.error);
     } else {
@@ -75,6 +77,12 @@ export function LoginPage() {
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
+
+          {/* Turnstile Captcha Widget for Supabase Captcha Protection */}
+          <TurnstileWidget
+            onSuccess={(token) => setCaptchaToken(token)}
+            onExpire={() => setCaptchaToken('')}
+          />
 
           {error && (
             <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-sm text-red-400">

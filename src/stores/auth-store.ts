@@ -9,8 +9,8 @@ interface AuthState {
   initialized: boolean;
 
   initialize: () => Promise<void>;
-  signIn: (email: string, password: string) => Promise<{ error?: string }>;
-  signUp: (name: string, email: string, password: string) => Promise<{ error?: string; success?: string }>;
+  signIn: (email: string, password: string, captchaToken?: string) => Promise<{ error?: string }>;
+  signUp: (name: string, email: string, password: string, captchaToken?: string) => Promise<{ error?: string; success?: string }>;
   signOut: () => Promise<void>;
 }
 
@@ -42,9 +42,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  signIn: async (email: string, password: string) => {
+  signIn: async (email: string, password: string, captchaToken?: string) => {
     set({ loading: true });
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: captchaToken ? { captchaToken } : undefined,
+    });
 
     if (error) {
       set({ loading: false });
@@ -55,7 +59,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return {};
   },
 
-  signUp: async (name: string, email: string, password: string) => {
+  signUp: async (name: string, email: string, password: string, captchaToken?: string) => {
     set({ loading: true });
     const { error } = await supabase.auth.signUp({
       email,
@@ -66,6 +70,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           role: 'Usuario',
           source: 'kinebytes-shop', // Track registration origin for KineByte
         },
+        captchaToken: captchaToken || undefined,
       },
     });
 
