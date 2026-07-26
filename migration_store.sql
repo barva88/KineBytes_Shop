@@ -191,7 +191,11 @@ CREATE POLICY "Usuarios pueden registrar items de sus pedidos"
 -- ------------------------------------------------------------------------------
 -- 7. VISTA: COMPRAS DE HARDWARE / SOFTWARE POR USUARIO (para KineByte Dashboard)
 -- ------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW public.user_purchased_products AS
+DROP VIEW IF EXISTS public.user_purchased_products CASCADE;
+
+CREATE OR REPLACE VIEW public.user_purchased_products
+WITH (security_invoker = true)
+AS
 SELECT
   o.user_id,
   o.id AS order_id,
@@ -207,8 +211,9 @@ SELECT
   o.created_at AS purchased_at
 FROM public.orders o
 JOIN public.order_items oi ON o.id = oi.order_id
-LEFT JOIN public.products p ON oi.product_id = p.id
-WHERE o.status IN ('paid', 'processing', 'fulfilled', 'pending');
+LEFT JOIN public.products p ON oi.product_id = p.id;
+
+GRANT SELECT ON public.user_purchased_products TO authenticated, anon, service_role;
 
 
 -- ------------------------------------------------------------------------------
