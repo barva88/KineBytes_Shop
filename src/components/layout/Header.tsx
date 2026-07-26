@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X, Heart, LogOut } from 'lucide-react';
-import { useCartStore, useCartItemCount } from '@/stores/cart-store';
+import { Search, ShoppingCart, User, Menu, Heart, LogOut } from 'lucide-react';
+import { useCartItemCount } from '@/stores/cart-store';
 import { useAuthStore } from '@/stores/auth-store';
-import { cn } from '@/lib/utils';
 import { MobileMenu } from './MobileMenu';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 

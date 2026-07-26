@@ -1,4 +1,4 @@
-import { Code2, Terminal, ExternalLink, Zap } from 'lucide-react';
+import { Code2, Terminal } from 'lucide-react';
 import { Card, Badge } from '@/components/ui';
 
 export function ApiDocsPage() {

@@ -1,6 +1,5 @@
-import { Watch, Heart, Radio, CheckCircle2 } from 'lucide-react';
-import { Card, Badge, Button } from '@/components/ui';
-import { Link } from 'react-router-dom';
+import { Watch, Heart, Radio } from 'lucide-react';
+import { Card, Badge } from '@/components/ui';
 
 export function WearOsPage() {
   return (

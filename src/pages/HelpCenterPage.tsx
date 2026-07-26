@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, HelpCircle, Cpu, Radio, Shield, CreditCard, ChevronRight, BookOpen } from 'lucide-react';
+import { HelpCircle, Cpu, Radio, Shield, CreditCard, ChevronRight, BookOpen } from 'lucide-react';
 import { Input, Card, Badge } from '@/components/ui';
 import { Link } from 'react-router-dom';
 

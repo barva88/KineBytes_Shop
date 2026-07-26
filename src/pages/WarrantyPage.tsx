@@ -1,4 +1,4 @@
-import { ShieldCheck, Cpu, Wrench, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Card, Badge, Button } from '@/components/ui';
 import { Link } from 'react-router-dom';
 

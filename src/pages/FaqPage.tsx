@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HelpCircle, ChevronDown, Sparkles } from 'lucide-react';
+import { HelpCircle, ChevronDown } from 'lucide-react';
 import { Card, Badge, Input } from '@/components/ui';
 
 const faqs = [

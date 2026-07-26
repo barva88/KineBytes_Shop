@@ -1,4 +1,4 @@
-import { Truck, RotateCcw, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
+import { Truck, RotateCcw, CheckCircle2 } from 'lucide-react';
 import { Card, Badge } from '@/components/ui';
 
 export function ShippingReturnsPage() {
