@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { KeyRound, ShieldCheck, RefreshCw, X, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Button, Input, Badge } from '@/components/ui';
-import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
 export function OtpVerificationModal({ open, phone, onSuccess, onClose }: { open: boolean; phone: string; onSuccess: () => void; onClose: () => void }) {
   const [code, setCode] = useState('');
@@ -19,14 +18,20 @@ export function OtpVerificationModal({ open, phone, onSuccess, onClose }: { open
     setSendingOtp(true);
     setError('');
     setSentMessage('');
-    const supabase = getSupabaseBrowserClient();
 
     try {
-      const { error: otpErr } = await supabase.auth.signInWithOtp({ phone });
-      if (otpErr) setSentMessage(`Hemos generado el código de verificación para ${phone}.`);
-      else setSentMessage(`Código de verificación enviado por SMS al ${phone}. Revisa tu teléfono.`);
-    } catch {
-      setSentMessage(`Código de verificación generado para ${phone}.`);
+      const res = await fetch('/api/otp/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Error al enviar SMS');
+      
+      setSentMessage(`Código de verificación enviado por SMS al ${phone}. Revisa tu teléfono.`);
+    } catch (err: any) {
+      setError(err.message || 'Error al enviar código');
     } finally {
       setSendingOtp(false);
     }
@@ -42,27 +47,22 @@ export function OtpVerificationModal({ open, phone, onSuccess, onClose }: { open
     }
 
     setLoading(true);
-    const supabase = getSupabaseBrowserClient();
 
     try {
-      const { error: verifyErr } = await supabase.auth.verifyOtp({
-        phone,
-        token: code.trim(),
-        type: 'sms',
+      const res = await fetch('/api/otp/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, code: code.trim() }),
       });
+      const data = await res.json();
 
-      if (verifyErr) {
-        if (code.trim().length >= 4) {
-          onSuccess();
-          return;
-        }
-        setError(verifyErr.message || 'Código de verificación incorrecto.');
+      if (!res.ok) {
+        setError(data.error || 'Código de verificación incorrecto.');
       } else {
         onSuccess();
       }
-    } catch {
-      if (code.trim().length >= 4) onSuccess();
-      else setError('Error al verificar el código.');
+    } catch (err: any) {
+      setError('Error de conexión al verificar el código.');
     } finally {
       setLoading(false);
     }
