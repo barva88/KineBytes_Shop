@@ -160,7 +160,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-      <OtpVerificationModal open={showOtp} email={shippingAddressData.email} onSuccess={onOtpSuccess} onClose={() => setShowOtp(false)} />
+      <OtpVerificationModal open={showOtp} phone={shippingAddressData.phone} onSuccess={onOtpSuccess} onClose={() => setShowOtp(false)} />
     </div>
   );
 }

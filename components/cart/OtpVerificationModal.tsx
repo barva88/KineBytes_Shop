@@ -4,7 +4,7 @@ import { KeyRound, ShieldCheck, RefreshCw, X, AlertCircle, CheckCircle2 } from '
 import { Button, Input, Badge } from '@/components/ui';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
-export function OtpVerificationModal({ open, email, onSuccess, onClose }: { open: boolean; email: string; onSuccess: () => void; onClose: () => void }) {
+export function OtpVerificationModal({ open, phone, onSuccess, onClose }: { open: boolean; phone: string; onSuccess: () => void; onClose: () => void }) {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [sendingOtp, setSendingOtp] = useState(false);
@@ -12,8 +12,8 @@ export function OtpVerificationModal({ open, email, onSuccess, onClose }: { open
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (open && email) sendOtpCode();
-  }, [open, email]);
+    if (open && phone) sendOtpCode();
+  }, [open, phone]);
 
   const sendOtpCode = async () => {
     setSendingOtp(true);
@@ -22,11 +22,11 @@ export function OtpVerificationModal({ open, email, onSuccess, onClose }: { open
     const supabase = getSupabaseBrowserClient();
 
     try {
-      const { error: otpErr } = await supabase.auth.signInWithOtp({ email });
-      if (otpErr) setSentMessage(`Hemos generado el código de verificación para ${email}.`);
-      else setSentMessage(`Código de verificación enviado a ${email}. Revisa tu bandeja de entrada.`);
+      const { error: otpErr } = await supabase.auth.signInWithOtp({ phone });
+      if (otpErr) setSentMessage(`Hemos generado el código de verificación para ${phone}.`);
+      else setSentMessage(`Código de verificación enviado por SMS al ${phone}. Revisa tu teléfono.`);
     } catch {
-      setSentMessage(`Código de verificación generado para ${email}.`);
+      setSentMessage(`Código de verificación generado para ${phone}.`);
     } finally {
       setSendingOtp(false);
     }
@@ -46,9 +46,9 @@ export function OtpVerificationModal({ open, email, onSuccess, onClose }: { open
 
     try {
       const { error: verifyErr } = await supabase.auth.verifyOtp({
-        email,
+        phone,
         token: code.trim(),
-        type: 'email',
+        type: 'sms',
       });
 
       if (verifyErr) {
@@ -79,7 +79,7 @@ export function OtpVerificationModal({ open, email, onSuccess, onClose }: { open
           <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mx-auto"><ShieldCheck size={28} /></div>
           <Badge variant="success">Verificación de Seguridad</Badge>
           <h2 className="text-2xl font-bold text-white">Confirma tu Identidad</h2>
-          <p className="text-xs text-zinc-400 leading-relaxed max-w-xs mx-auto">Antes de procesar el pago, hemos enviado un código OTP de confirmación a tu correo de usuario.</p>
+          <p className="text-xs text-zinc-400 leading-relaxed max-w-xs mx-auto">Antes de procesar el pago, hemos enviado un código OTP de confirmación por SMS a tu teléfono.</p>
         </div>
         {sentMessage && (
           <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-xs text-emerald-300 flex items-start gap-2">
@@ -104,7 +104,7 @@ export function OtpVerificationModal({ open, email, onSuccess, onClose }: { open
           </Button>
         </form>
         <div className="pt-2 text-center border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-500">
-          <span>¿No recibiste el correo?</span>
+          <span>¿No recibiste el SMS?</span>
           <button type="button" onClick={sendOtpCode} disabled={sendingOtp} className="text-emerald-400 hover:underline font-medium flex items-center gap-1"><RefreshCw size={12} className={sendingOtp ? 'animate-spin' : ''} /> Reenviar código</button>
         </div>
       </div>
