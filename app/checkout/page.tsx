@@ -26,10 +26,10 @@ export default function CheckoutPage() {
   const { shippingAddressData, selectedShippingId, updateShippingAddress, setShippingMethod, clearCart } = useCartStore();
 
   useEffect(() => {
-    if (cartProducts.length === 0) {
+    if (cartProducts.length === 0 && !isProcessing) {
       router.push('/cart');
     }
-  }, [cartProducts.length, router]);
+  }, [cartProducts.length, router, isProcessing]);
 
   useEffect(() => {
     if (user && !shippingAddressData.email) {
@@ -62,8 +62,9 @@ export default function CheckoutPage() {
     setShowOtp(false);
     setIsProcessing(true);
     setTimeout(() => {
-      clearCart();
       router.push('/order-success');
+      // Esperar un momento antes de vaciar el carrito para no disparar el useEffect
+      setTimeout(() => clearCart(), 500);
     }, 2000);
   };
 
