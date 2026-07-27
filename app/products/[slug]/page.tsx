@@ -5,6 +5,7 @@ import { getProductBySlug, getProducts } from '@/lib/products-service';
 import { Button, Badge } from '@/components/ui';
 import { VariantSelector } from '@/components/product/VariantSelector';
 import { ProductCard } from '@/components/product/ProductCard';
+import { ProductReviews } from '@/components/product/ProductReviews';
 import { formatCurrency, getStockDisplay } from '@/lib/utils';
 import { AddToCartButton } from './AddToCartButton';
 
@@ -101,60 +102,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       </div>
       
       {/* Reviews Section */}
-      <div id="reviews" className="mb-24 scroll-mt-24">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-white">Reseñas de Clientes</h2>
-          <div className="flex items-center gap-4">
-            <div className="flex text-amber-400">
-              {[1, 2, 3, 4, 5].map(i => <Star key={i} size={20} className={i <= Math.floor(product.rating) ? "fill-current" : "text-zinc-700"} />)}
-            </div>
-            <span className="text-xl font-bold text-white">{product.rating} <span className="text-sm text-zinc-500 font-normal">de 5</span></span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Mocked Reviews - In a real app these would come from the database */}
-          <div className="bg-kb-card border border-zinc-800 rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">JD</div>
-                <div>
-                  <p className="text-sm font-medium text-white">Juan Diego</p>
-                  <p className="text-xs text-zinc-500">Compra verificada</p>
-                </div>
-              </div>
-              <div className="flex text-amber-400">{[1, 2, 3, 4, 5].map(i => <Star key={i} size={14} className="fill-current" />)}</div>
-            </div>
-            <h4 className="text-md font-semibold text-white mb-2">Excelente calidad y precisión</h4>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              El {product.name} ha transformado completamente mis entrenamientos. Los datos son súper precisos y la integración con la app de KineBytes funciona sin problemas. Totalmente recomendado para atletas serios.
-            </p>
-            <p className="text-xs text-zinc-600 mt-4">Hace 2 semanas</p>
-          </div>
-
-          <div className="bg-kb-card border border-zinc-800 rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">MR</div>
-                <div>
-                  <p className="text-sm font-medium text-white">María Rodríguez</p>
-                  <p className="text-xs text-zinc-500">Compra verificada</p>
-                </div>
-              </div>
-              <div className="flex text-amber-400">{[1, 2, 3, 4, 5].map(i => <Star key={i} size={14} className={i <= 4 ? "fill-current" : "text-zinc-700"} />)}</div>
-            </div>
-            <h4 className="text-md font-semibold text-white mb-2">Muy buen producto, envío rápido</h4>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              La calidad de construcción es premium. Se nota que están hechos para resistir. Le doy 4 estrellas solo porque me gustaría que incluyera un estuche de viaje más rígido, pero por lo demás es perfecto.
-            </p>
-            <p className="text-xs text-zinc-600 mt-4">Hace 1 mes</p>
-          </div>
-        </div>
-        
-        <div className="mt-8 text-center">
-          <Button variant="outline">Cargar más reseñas</Button>
-        </div>
-      </div>
+      <ProductReviews product={product} />
       
       {relatedProducts.length > 0 && (
         <div>
