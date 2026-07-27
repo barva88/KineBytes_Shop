@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { FilterSidebar } from '@/components/filters/FilterSidebar';
@@ -19,6 +19,14 @@ function ProductListInner({ initialProducts }: { initialProducts: StoreProduct[]
     priceRange: [0, 1000] as [number, number],
     condition: 'all',
   });
+
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      query: searchParams?.get('q') || '',
+      category: (searchParams?.get('category') as StoreCategorySlug) || 'all',
+    }));
+  }, [searchParams]);
 
   const filteredProducts = useMemo(() => {
     const q = filters.query.trim().toLowerCase();
