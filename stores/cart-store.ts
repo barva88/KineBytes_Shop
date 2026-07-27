@@ -107,7 +107,8 @@ export function useCartProducts() {
 }
 
 export function useCartItemCount() {
-  return useCartStore((s) => s.items.reduce((sum, item) => sum + item.quantity, 0));
+  const cartProducts = useCartProducts();
+  return useMemo(() => cartProducts.reduce((sum, cp) => sum + cp.item.quantity, 0), [cartProducts]);
 }
 
 export function useCartSubtotal() {
