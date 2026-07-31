@@ -12,9 +12,9 @@ export function Footer() {
               <Image
                 src="/images/KineBytes Logo.svg"
                 alt="KineBytes Logo"
-                width={240}
-                height={60}
-                className="h-10 sm:h-12 w-auto object-contain"
+                width={280}
+                height={70}
+                className="h-12 sm:h-14 w-auto object-contain"
               />
             </Link>
             <p className="text-sm text-zinc-400 mt-4 leading-relaxed">{STORE_TAGLINE}</p>

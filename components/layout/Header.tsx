@@ -34,7 +34,7 @@ export function Header() {
           🚀 Envío gratis en pedidos superiores a $200 — Tecnología atlética de alto rendimiento
         </div>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center gap-4">
+          <div className="flex h-20 items-center gap-4">
             <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2 text-zinc-400 hover:text-white transition-colors" aria-label="Open menu">
               <Menu size={22} />
             </button>
@@ -43,9 +43,9 @@ export function Header() {
               <Image
                 src="/images/KineBytes Logo.svg"
                 alt="KineBytes Shop Logo"
-                width={240}
-                height={60}
-                className="h-10 sm:h-12 w-auto object-contain"
+                width={280}
+                height={70}
+                className="h-12 sm:h-14 w-auto object-contain"
                 priority
               />
             </Link>
