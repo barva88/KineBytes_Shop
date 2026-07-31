@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ArrowLeft, Building2, Star, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { notFound } from 'next/navigation';
 
@@ -33,8 +34,8 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
         <ArrowLeft size={16} /> Volver
       </Link>
       <div className="flex flex-col md:flex-row gap-8 mb-16 p-8 bg-kb-card border border-zinc-800 rounded-3xl">
-        <div className="h-24 w-24 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-2xl shrink-0">
-          {brand.logo}
+        <div className="h-24 w-24 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center p-4 shrink-0">
+          <Image src="/images/KineBytes Icon.svg" alt="KineBytes Logo" width={64} height={64} className="h-16 w-auto object-contain" />
         </div>
         <div className="flex-1">
           <h1 className="text-3xl font-bold text-white mb-1">{brand.name}</h1>

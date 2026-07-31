@@ -7,6 +7,8 @@ import { useAuthStore } from '@/stores/auth-store';
 import { Button, Input, TurnstileWidget } from '@/components/ui';
 import { Suspense } from 'react';
 
+import Image from 'next/image';
+
 function RegisterForm() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -53,8 +55,15 @@ function RegisterForm() {
     <div className="flex min-h-[80vh] items-center justify-center px-4 py-12">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mb-6 font-bold tracking-[0.3em] text-sm">
-            KB
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-6 p-2.5 mx-auto">
+            <Image
+              src="/images/KineBytes Icon.svg"
+              alt="KineBytes Icon"
+              width={48}
+              height={48}
+              className="h-9 w-auto object-contain"
+              priority
+            />
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-white">Crear Cuenta</h2>
           <p className="mt-2 text-sm text-zinc-400">
