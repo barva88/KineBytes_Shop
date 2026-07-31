@@ -1,5 +1,3 @@
-import { getSupabaseAdminClient } from '@/lib/supabase/client';
-
 export interface LockoutStatus {
   isLocked: boolean;
   isBanned: boolean;

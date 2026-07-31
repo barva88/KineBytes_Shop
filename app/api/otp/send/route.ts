@@ -7,8 +7,11 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifyServiceSid = process.env.TWILIO_VERIFY_SERVICE_SID;
 
 export async function POST(request: Request) {
+  let targetPhone = 'unknown';
+
   try {
-    const { phone } = await request.json();
+    const body = await request.json();
+    const phone = body?.phone;
 
     if (!phone) {
       return NextResponse.json({ error: 'El número de teléfono es requerido' }, { status: 400 });
@@ -18,9 +21,10 @@ export async function POST(request: Request) {
     if (!formattedPhone.startsWith('+')) {
       formattedPhone = `+${formattedPhone}`;
     }
+    targetPhone = formattedPhone;
 
     // Security Check: Lockout Rate Limiting
-    const lockout = checkLockout(formattedPhone);
+    const lockout = checkLockout(targetPhone);
     if (lockout.isLocked) {
       return NextResponse.json({
         error: lockout.message,
@@ -40,7 +44,7 @@ export async function POST(request: Request) {
 
     const verification = await client.verify.v2.services(verifyServiceSid)
       .verifications
-      .create({ to: formattedPhone, channel: 'sms' });
+      .create({ to: targetPhone, channel: 'sms' });
 
     return NextResponse.json({
       success: true,
@@ -59,7 +63,7 @@ export async function POST(request: Request) {
       isRateLimit = true;
     }
 
-    const lockout = recordFailedAttempt(phone || 'unknown', isRateLimit);
+    const lockout = recordFailedAttempt(targetPhone, isRateLimit);
 
     return NextResponse.json({
       error: userMsg,

@@ -13,7 +13,7 @@ const STATES = {
     message: 'Tu pasarela de pago procesó la transacción correctamente. Serás redirigido en un momento.',
     redirect: '/order-success',
     cta: 'Ver confirmación',
-    ctaVariant: 'default' as const,
+    ctaVariant: 'primary' as const,
   },
   cancel: {
     icon: XCircle,
@@ -33,7 +33,7 @@ const STATES = {
     message: 'La pasarela de pago reportó un error. Intenta nuevamente o elige otro método.',
     redirect: '/checkout',
     cta: 'Reintentar',
-    ctaVariant: 'default' as const,
+    ctaVariant: 'primary' as const,
   },
 };
 
