@@ -1,15 +1,14 @@
-import { HeroBanner } from '@/components/home/HeroBanner';
-import { CategoryGrid } from '@/components/home/CategoryGrid';
-import { FeaturedCarousel } from '@/components/home/FeaturedCarousel';
-import { TrustBadges } from '@/components/home/TrustBadges';
+import { getProducts } from '@/lib/products-service';
+import { DynamicHomeLayout } from '@/components/home/DynamicHomeLayout';
 
-export default function HomePage() {
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export default async function HomePage() {
+  const products = await getProducts();
+
   return (
-    <div className="flex flex-col">
-      <HeroBanner />
-      <TrustBadges />
-      <FeaturedCarousel />
-      <CategoryGrid />
+    <div className="min-h-screen bg-kb-black">
+      <DynamicHomeLayout products={products} />
     </div>
   );
 }
