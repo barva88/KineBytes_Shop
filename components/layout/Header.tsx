@@ -8,6 +8,8 @@ import { useAuthStore } from '@/stores/auth-store';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { MobileMenu } from './MobileMenu';
 
+import Image from 'next/image';
+
 export function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -38,13 +40,17 @@ export function Header() {
             </button>
 
             <Link href="/" className="flex items-center gap-3 shrink-0">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold tracking-[0.3em] text-emerald-400">
-                KB
+              <Image
+                src="/images/KineBytes Logo.svg"
+                alt="KineBytes Shop Logo"
+                width={160}
+                height={40}
+                className="h-9 w-auto object-contain"
+                priority
+              />
+              <span className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 rounded-md px-1.5 py-0.5 hidden sm:inline-block">
+                SHOP
               </span>
-              <div className="hidden sm:block">
-                <p className="text-sm font-bold uppercase tracking-[0.25em] text-white">KineBytes</p>
-                <p className="text-[10px] text-zinc-500 tracking-wider">SHOP</p>
-              </div>
             </Link>
 
             <nav className="hidden lg:flex items-center gap-1 ml-8">

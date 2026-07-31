@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { STORE_NAME, STORE_TAGLINE } from '@/lib/constants';
 
 export function Footer() {
@@ -8,8 +9,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="md:col-span-1 space-y-4">
             <Link href="/" className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-emerald-400">KB</span>
-              <p className="text-sm font-bold uppercase tracking-[0.25em] text-white">KineBytes</p>
+              <Image
+                src="/images/KineBytes Logo.svg"
+                alt="KineBytes Logo"
+                width={160}
+                height={40}
+                className="h-9 w-auto object-contain"
+              />
+              <span className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 rounded-md px-1.5 py-0.5">
+                SHOP
+              </span>
             </Link>
             <p className="text-sm text-zinc-400 mt-4 leading-relaxed">{STORE_TAGLINE}</p>
           </div>

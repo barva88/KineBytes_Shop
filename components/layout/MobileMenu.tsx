@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { X, ChevronRight } from 'lucide-react';
 import { CATEGORIES } from '@/lib/constants';
 
@@ -10,9 +11,14 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="absolute inset-y-0 left-0 w-full max-w-xs bg-kb-surface border-r border-zinc-800 animate-slide-in-right">
         <div className="flex items-center justify-between p-5 border-b border-zinc-800">
-          <Link href="/" onClick={onClose} className="flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-emerald-400">KB</span>
-            <span className="text-sm font-bold uppercase tracking-widest text-white">Menu</span>
+          <Link href="/" onClick={onClose} className="flex items-center gap-2">
+            <Image
+              src="/images/KineBytes Logo.svg"
+              alt="KineBytes Logo"
+              width={140}
+              height={36}
+              className="h-7 w-auto object-contain"
+            />
           </Link>
           <button onClick={onClose} className="p-2 text-zinc-400 hover:text-white"><X size={20} /></button>
         </div>
