@@ -360,3 +360,24 @@ VALUES
   ('a1b2c3d4-0008-4000-8000-000000000008', 'Coaches', 'Hasta 10', 1),
   ('a1b2c3d4-0008-4000-8000-000000000008', 'Atletas', 'Ilimitados', 2),
   ('a1b2c3d4-0008-4000-8000-000000000008', 'Almacenamiento', '100 GB', 3);
+
+-- ------------------------------------------------------------------------------
+-- 7. TABLA DE SEGURIDAD Y BLOQUEOS DE SEGURIDAD (security_lockouts)
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.security_lockouts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  identifier TEXT UNIQUE NOT NULL, -- Número de teléfono o Email
+  attempts INTEGER DEFAULT 1,
+  is_banned BOOLEAN DEFAULT FALSE,
+  locked_until TIMESTAMPTZ,
+  last_attempt_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.security_lockouts ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Solo administradores ven o modifican bloqueos" ON public.security_lockouts;
+CREATE POLICY "Solo administradores ven o modifican bloqueos"
+  ON public.security_lockouts FOR ALL
+  USING (auth.role() = 'service_role');
+
