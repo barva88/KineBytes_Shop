@@ -17,9 +17,13 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-white mb-6 uppercase tracking-wider">Tienda</h3>
             <ul className="space-y-4">
               <li><Link href="/products" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Todos los Productos</Link></li>
-              <li><Link href="/products?category=interactive-hardware" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Hardware Interactivo</Link></li>
-              <li><Link href="/products?category=sensors" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Sensores</Link></li>
-              <li><Link href="/products?category=software" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Software</Link></li>
+              <li><Link href="/collections" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Colecciones</Link></li>
+              <li><Link href="/collections/new" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Novedades</Link></li>
+              <li><Link href="/collections/bestsellers" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Más Vendidos</Link></li>
+              <li><Link href="/collections/offers" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Ofertas</Link></li>
+              <li><Link href="/compare" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Comparador</Link></li>
+              <li><Link href="/gift-cards" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Gift Cards</Link></li>
+              <li><Link href="/reviews" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Reseñas</Link></li>
             </ul>
           </div>
           <div>
@@ -27,21 +31,37 @@ export function Footer() {
             <ul className="space-y-4">
               <li><Link href="/help" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Centro de Ayuda</Link></li>
               <li><Link href="/contact" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Contacto</Link></li>
-              <li><Link href="/shipping-returns" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Envíos y Devoluciones</Link></li>
               <li><Link href="/faq" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">FAQ</Link></li>
+              <li><Link href="/shipping-returns" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Envíos y Devoluciones</Link></li>
+              <li><Link href="/returns" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Solicitar Devolución</Link></li>
+              <li><Link href="/tracking" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Rastrear Pedido</Link></li>
+              <li><Link href="/loyalty" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Programa de Lealtad</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white mb-6 uppercase tracking-wider">Legal</h3>
+            <h3 className="text-sm font-semibold text-white mb-6 uppercase tracking-wider">Empresa</h3>
             <ul className="space-y-4">
-              <li><Link href="/terms" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Términos de Servicio</Link></li>
-              <li><Link href="/privacy" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Política de Privacidad</Link></li>
-              <li><Link href="/warranty" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Garantía</Link></li>
+              <li><Link href="/about" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Sobre Nosotros</Link></li>
+              <li><Link href="/blog" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Blog</Link></li>
+              <li><Link href="/careers" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Careers</Link></li>
+              <li><Link href="/press" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Sala de Prensa</Link></li>
+              <li><Link href="/sustainability" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Sostenibilidad</Link></li>
+              <li><Link href="/partners" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">Partners</Link></li>
+              <li><Link href="/app-download" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">App KineBytes</Link></li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-zinc-800 pt-8 text-center md:flex md:items-center md:justify-between md:text-left">
+        <div className="border-t border-zinc-800 pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-xs text-zinc-500">© {new Date().getFullYear()} {STORE_NAME}. Todos los derechos reservados.</p>
+          <div className="flex flex-wrap gap-4 text-xs text-zinc-600">
+            <Link href="/terms" className="hover:text-zinc-400 transition-colors">Términos</Link>
+            <Link href="/privacy" className="hover:text-zinc-400 transition-colors">Privacidad</Link>
+            <Link href="/cookies" className="hover:text-zinc-400 transition-colors">Cookies</Link>
+            <Link href="/security" className="hover:text-zinc-400 transition-colors">Seguridad</Link>
+            <Link href="/legal-notice" className="hover:text-zinc-400 transition-colors">Aviso Legal</Link>
+            <Link href="/accessibility" className="hover:text-zinc-400 transition-colors">Accesibilidad</Link>
+            <Link href="/sitemap-html" className="hover:text-zinc-400 transition-colors">Mapa del Sitio</Link>
+          </div>
         </div>
       </div>
     </footer>
