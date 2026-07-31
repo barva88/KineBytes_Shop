@@ -12,8 +12,8 @@ export function Footer() {
               <Image
                 src="/images/KineBytes Logo.svg"
                 alt="KineBytes Logo"
-                width={220}
-                height={55}
+                width={240}
+                height={60}
                 className="h-10 sm:h-12 w-auto object-contain"
               />
             </Link>

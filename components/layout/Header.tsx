@@ -39,12 +39,12 @@ export function Header() {
               <Menu size={22} />
             </button>
 
-            <Link href="/" className="flex items-center shrink-0">
+            <Link href="/" className="flex items-center shrink-0 py-1">
               <Image
                 src="/images/KineBytes Logo.svg"
                 alt="KineBytes Shop Logo"
-                width={220}
-                height={55}
+                width={240}
+                height={60}
                 className="h-10 sm:h-12 w-auto object-contain"
                 priority
               />
