@@ -11,13 +11,13 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="absolute inset-y-0 left-0 w-full max-w-xs bg-kb-surface border-r border-zinc-800 animate-slide-in-right">
         <div className="flex items-center justify-between p-5 border-b border-zinc-800">
-          <Link href="/" onClick={onClose} className="flex items-center gap-2">
+          <Link href="/" onClick={onClose} className="flex items-center">
             <Image
               src="/images/KineBytes Logo.svg"
               alt="KineBytes Logo"
-              width={140}
-              height={36}
-              className="h-7 w-auto object-contain"
+              width={180}
+              height={45}
+              className="h-9 w-auto object-contain"
             />
           </Link>
           <button onClick={onClose} className="p-2 text-zinc-400 hover:text-white"><X size={20} /></button>

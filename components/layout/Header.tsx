@@ -39,18 +39,15 @@ export function Header() {
               <Menu size={22} />
             </button>
 
-            <Link href="/" className="flex items-center gap-3 shrink-0">
+            <Link href="/" className="flex items-center shrink-0">
               <Image
                 src="/images/KineBytes Logo.svg"
                 alt="KineBytes Shop Logo"
-                width={160}
-                height={40}
-                className="h-9 w-auto object-contain"
+                width={220}
+                height={55}
+                className="h-10 sm:h-12 w-auto object-contain"
                 priority
               />
-              <span className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 rounded-md px-1.5 py-0.5 hidden sm:inline-block">
-                SHOP
-              </span>
             </Link>
 
             <nav className="hidden lg:flex items-center gap-1 ml-8">
